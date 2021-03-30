@@ -37,7 +37,7 @@ void MovieInfoServiceHandler::GetMoviesByIds(std::vector<std::string>& _return, 
   std::cout << "GetMoviesByIds here ...!!!!!!!!" << std::endl;
  
  // testing  Get the movie info service client pool
-    auto movie_info_client_wrapper = movie_mongodb_client_pool->Pop();
+    auto movie_info_client_wrapper = _movie_mongodb_client_pool->Pop();
     if (!movie_info_client_wrapper) {
 	   std::cout << "ERROR here ..." << std::endl;
       ServiceException se;
