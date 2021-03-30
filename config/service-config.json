@@ -1,0 +1,14 @@
+{
+  "recommender-service": {
+    "addr": "recommender-service",
+    "port": 9092
+  },
+  "movie-info-service": {
+    "addr": "movie-info-service",
+    "port": 9093
+  },
+  "user-likes-service": {
+    "addr": "user-likes-service",
+    "port": 9094
+  }
+}
