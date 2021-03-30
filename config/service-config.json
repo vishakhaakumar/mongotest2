@@ -10,5 +10,9 @@
   "user-likes-service": {
     "addr": "user-likes-service",
     "port": 9094
-  }
+  },
+  "movie-info-mongodb": {
+    "addr": "movie-info-mongodb",
+    "port": 27017
+  },
 }
