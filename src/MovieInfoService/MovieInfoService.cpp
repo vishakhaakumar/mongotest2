@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
    std::cout << "Mongodb port and addr done ..." << std::endl;
  
   // 4b: get the client of movie-info-service
-  ClientPool<ThriftClient<MovieInfoMongoClient>> movie_info_client_pool(
+  ClientPool<ThriftClient<MovieInfoServiceClient>> movie_mongodb_client_pool(
       "movie-info-service", movie_info_mongodb_addr, movie_info_mongodb_port, 0, 128, 1000);
 	
 	std::cout << "Mongodb client done ..." << std::endl;
