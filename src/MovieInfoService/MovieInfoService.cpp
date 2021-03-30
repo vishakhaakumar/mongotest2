@@ -37,8 +37,20 @@ int main(int argc, char **argv) {
 
   // 3: get my port
   int my_port = config_json["movie-info-service"]["port"];
+	
+  // 4a: get the movie info service's port and address
+  int movie_info_mongodb_port = config_json["movie-info-mongodb"]["port"];
+  std::string movie_info_mongodb_addr = config_json["movie-info-mongodb"]["addr"];
+	
+   std::cout << "Mongodb port and addr done ..." << std::endl;
+ 
+  // 4b: get the client of movie-info-service
+  ClientPool<ThriftClient<MovieInfoMongoClient>> movie_info_client_pool(
+      "movie-info-service", movie_info_mongodb_addr, movie_info_mongodb_port, 0, 128, 1000);
+	
+	std::cout << "Mongodb client done ..." << std::endl;
 
-  // 4: configure this server
+  // 5: configure this server
   TThreadedServer server(
       std::make_shared<MovieInfoServiceProcessor>(
           std::make_shared<MovieInfoServiceHandler>()),
