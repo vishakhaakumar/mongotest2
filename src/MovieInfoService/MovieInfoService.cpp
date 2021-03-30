@@ -49,6 +49,19 @@ int main(int argc, char **argv) {
       "movie-info-service", movie_info_mongodb_addr, movie_info_mongodb_port, 0, 128, 1000);
 	
 	std::cout << "Mongodb client done ..." << std::endl;
+	
+	// testing  Get the movie info service client pool
+    auto movie_info_client_wrapper = movie_mongodb_client_pool->Pop();
+    if (!movie_info_client_wrapper) {
+	std::cout << "ERROR here ..." << std::endl;
+      ServiceException se;
+      se.errorCode = ErrorCode::SE_THRIFT_CONN_ERROR;
+      se.message = "Failed to connect to movie-info-service";
+      throw se;
+    }
+	std::cout << "Client pool pop done !!! ..." << std::endl;
+    auto movie_info_client = movie_info_client_wrapper->GetClient();
+	std::cout << "GetClient done !!! ..." << std::endl;
 
   // 5: configure this server
   TThreadedServer server(
