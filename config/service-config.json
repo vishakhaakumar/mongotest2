@@ -14,5 +14,5 @@
   "movie-info-mongodb": {
     "addr": "movie-info-mongodb",
     "port": 27017
-  },
+  }
 }
