@@ -6,6 +6,17 @@
 #include <regex>
 #include <future>
 
+#include <cstdint>
+#include <vector>
+#include <bsoncxx/json.hpp>
+#include <mongocxx/client.hpp>
+#include <mongocxx/stdx.hpp>
+#include <mongocxx/uri.hpp>
+#include <mongocxx/instance.hpp>
+#include <bsoncxx/builder/stream/helpers.hpp>
+#include <bsoncxx/builder/stream/document.hpp>
+#include <bsoncxx/builder/stream/array.hpp>
+
 #include "../../gen-cpp/MovieInfoService.h"
 
 #include "../ClientPool.h"
@@ -49,16 +60,10 @@ void MovieInfoServiceHandler::GetMoviesByIds(std::vector<std::string>& _return, 
     auto movie_info_mongo_client = movie_info_client_wrapper->GetClient();
 	std::cout << "GetClient done !!! ..." << std::endl;
 	
-   auto collection = mongoc_client_get_collection(
-      movie_info_mongo_client, "movie-info-mongodb", "movie-info-collection");
-  if (!collection) {
-    std::cout << "Failed to create collection !!! ..." << std::endl;
-    ServiceException se;
-    se.errorCode = ErrorCode::SE_MONGODB_ERROR;
-    se.message = "Failed to create collection movie-info from DB movie-info";
-    _movie_mongodb_client_pool->Push(movie_info_client_wrapper);
-    throw se;
-  }
+	mongocxx::database db = movie_info_mongo_client["movieinfodb"];
+	std::cout << "DB done !!! ..." << std::endl;
+	
+   
    std::cout << "Create collection done !!! ..." << std::endl;
 	
  
