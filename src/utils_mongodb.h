@@ -1,7 +1,7 @@
 #ifndef MOVIES_MICROSERVICES_UTILS_MONGODB_H_
 #define MOVIES_MICROSERVICES_UTILS_MONGODB_H_
 
-#include <mongoc.h>
+#include "mongoc.h"
 #include <bson/bson.h>
 
 #define SERVER_SELECTION_TIMEOUT_MS 300
