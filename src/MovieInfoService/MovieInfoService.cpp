@@ -38,6 +38,13 @@ int main(int argc, char **argv) {
   // 3: get my port
   int my_port = config_json["movie-info-service"]["port"];
 	
+   mongoc_client_pool_t* mongodb_client_pool =
+      init_mongodb_client_pool(config_json, "movie-info-mongodb", MONGODB_POOL_MAX_SIZE);
+	
+	 if (mongodb_client_pool == nullptr) {
+    std::cout << "Mongo client failed heree ..." << std::endl;
+  }
+	
   // 4a: get the movie info service's port and address
   int movie_info_mongodb_port = config_json["movie-info-mongodb"]["port"];
   std::string movie_info_mongodb_addr = config_json["movie-info-mongodb"]["addr"];
