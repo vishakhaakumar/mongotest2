@@ -5,6 +5,7 @@
 #include <signal.h>
 
 #include "../utils.h"
+#include "../utils_mongodb.h"
 #include "MovieInfoHandler.h"
 
 using json = nlohmann::json;
