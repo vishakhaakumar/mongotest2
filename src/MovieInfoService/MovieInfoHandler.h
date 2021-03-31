@@ -46,8 +46,21 @@ void MovieInfoServiceHandler::GetMoviesByIds(std::vector<std::string>& _return, 
       throw se;
     }
 	std::cout << "Client pool pop done !!! ..." << std::endl;
-    auto movie_info_client = movie_info_client_wrapper->GetClient();
+    auto movie_info_mongo_client = movie_info_client_wrapper->GetClient();
 	std::cout << "GetClient done !!! ..." << std::endl;
+	
+   auto collection = mongoc_client_get_collection(
+      movie_info_mongo_client, "movie-info-mongodb", "movie-info-collection");
+  if (!collection) {
+    std::cout << "Failed to create collection !!! ..." << std::endl;
+    ServiceException se;
+    se.errorCode = ErrorCode::SE_MONGODB_ERROR;
+    se.message = "Failed to create collection movie-info from DB movie-info";
+    _movie_mongodb_client_pool->Push(movie_info_client_wrapper);
+    throw se;
+  }
+   std::cout << "Create collection done !!! ..." << std::endl;
+	
  
    _return.push_back("Muppets Take Manhattan I");
    _return.push_back("The Lion Kingi II");
