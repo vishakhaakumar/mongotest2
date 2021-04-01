@@ -6,8 +6,8 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-#include "mongoc.h"
-#include "bson/bson.h"
+#include <mongoc.h>
+#include <bson/bson.h>
 
 #include "logger.h"
 
