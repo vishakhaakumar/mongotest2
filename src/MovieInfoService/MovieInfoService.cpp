@@ -5,6 +5,7 @@
 #include <signal.h>
 
 #include "../utils.h"
+#include "../utils_mongodb.h"
 #include "MovieInfoHandler.h"
 
 using json = nlohmann::json;
@@ -38,19 +39,34 @@ int main(int argc, char **argv) {
   // 3: get my port
   int my_port = config_json["movie-info-service"]["port"];
 	
-   // 4a: get the movie info service's port and address
-  int movie_info_mongodb_port = config_json["movie-info-mongodb"]["port"];
-  std::string movie_info_mongodb_addr = config_json["movie-info-mongodb"]["addr"];
+  mongoc_client_pool_t* mongodb_client_pool =
+      init_mongodb_client_pool(config_json, "movie-info-mongodb", MONGODB_POOL_MAX_SIZE);
+	std::cout << "Mongodb 1 part client done ..." << std::endl;
 	
-   std::cout << "Mongodb port and addr done ..." << std::endl;
- 
-  // 4b: get the client of movie-info-service
-  ClientPool<ThriftClient<MovieInfoServiceClient>> movie_mongodb_client_pool(
-      "movie-info-mongodb", movie_info_mongodb_addr, movie_info_mongodb_port, 0, 128, 1000);
+if (mongodb_client_pool == nullptr) {
+    return EXIT_FAILURE;
+  }
+	std::cout << "Mongodb 1 part nullptr done ..." << std::endl;
 	
-	std::cout << "Mongodb client done ..." << std::endl;
-
-  // 5: configure this server
+mongoc_client_t *mongodb_client = mongoc_client_pool_pop(mongodb_client_pool);
+  if (!mongodb_client) {
+    LOG(fatal) << "Failed to pop mongoc client";
+    return EXIT_FAILURE;
+  }
+	std::cout << "Mongodb 1 part pop done ..." << std::endl;
+  bool r = false;
+  while (!r) {
+    r = CreateIndex(mongodb_client, "movie-info", "movie_id", true);
+    if (!r) {
+      LOG(error) << "Failed to create mongodb index, try again";
+      sleep(1);
+    }
+  }
+	std::cout << "Mongodb 1 part Index done ..." << std::endl;
+  mongoc_client_pool_push(mongodb_client_pool, mongodb_client);
+	std::cout << "Mongodb 1 part push done ..." << std::endl;
+	
+    // 5: configure this server
   TThreadedServer server(
       std::make_shared<MovieInfoServiceProcessor>(
           std::make_shared<MovieInfoServiceHandler>(&movie_mongodb_client_pool)),
